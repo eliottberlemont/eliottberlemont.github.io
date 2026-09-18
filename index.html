@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eliott Berlemont — Avionics & Systems Engineering</title>
+<meta name="description" content="Industrial engineering student at Cal Poly Pomona working on rocket avionics, data acquisition, and guidance systems with UMBRA.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Cal Poly Pomona &middot; B.S. Industrial Engineering, 2029</p>
+    <h1>Eliott Berlemont</h1>
+    <p class="lede">I build and integrate the electronics that fly rockets and the ground systems that test them &mdash; flight avionics, data acquisition, and closed-loop control. Currently project manager for <a href="#revenant">Revenant</a> at UMBRA, Cal Poly Pomona's rocketry association.</p>
+    <nav class="links">
+      <a href="mailto:eliott.berlemont@gmail.com">eliott.berlemont@gmail.com</a>
+      <a href="https://github.com/AvidDomainUser">GitHub</a>
+      <!-- Paste your LinkedIn URL here and uncomment:
+      <a href="https://www.linkedin.com/in/YOUR-HANDLE">LinkedIn</a> -->
+      <span class="loc">Costa Mesa, CA</span>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section id="revenant" class="project">
+    <div class="project-head">
+      <div>
+        <h2>Project Revenant</h2>
+        <p class="role">Project Manager &middot; UMBRA &middot; Fall 2026 &ndash; present</p>
+      </div>
+      <img class="patch" src="assets/img/revenant-logo.png" alt="Project Revenant mission patch">
+    </div>
+
+    <p>Revenant is a high-power rocket built to fly itself. The goal is a 6-DOF guidance, navigation, and control system that holds attitude in real time using servo-actuated canards for closed-loop pitch, yaw, and roll &mdash; not a passively stable vehicle with control surfaces bolted on, but one where the canards <em>are</em> the stabilization system and the fins are only a passive floor.</p>
+
+    <p>I lead a 25-person engineering team across four subteams &mdash; Systems &amp; Manufacturing, Avionics, Aerodynamics, and Mechanisms &amp; Actuations &mdash; and own technical scope, budget, and schedule. Our target this semester is Critical Design Review.</p>
+
+    <h3>What I'd point a reviewer at</h3>
+    <p>The most useful thing I did on this project was distrust our own simulation. The OpenRocket model had been built with placeholder materials &mdash; cardboard and balsa &mdash; while the actual bill of materials called for Blue Tube, PA6-CF, and G10. Rebuilding the model with real densities (1,250, 1,090, and 1,850 kg/m&sup3; respectively) showed the vehicle was aerodynamically unstable off the rail. The design had been wrong the whole time; the model had just been flattering it.</p>
+
+    <p>The fix was deliberately minimal. It would have been easy to solve the instability by enlarging the fins, but that would have quietly turned Revenant into a conventional rocket with decorative canards and defeated the entire point of the project. We corrected just enough to clear the rail safely and preserved the control architecture.</p>
+
+    <dl class="specs">
+      <div><dt>Simulation</dt><dd>OpenRocket driven headless through its Java API via JPype, with real BOM material properties</dd></div>
+      <div><dt>Control</dt><dd>Raspberry Pi Pico, custom Python control software</dd></div>
+      <div><dt>Structure</dt><dd>Blue Tube airframe, PA6-CF printed components, G10 fins</dd></div>
+      <div><dt>Propulsion</dt><dd>AeroTech I59WN-P</dd></div>
+      <div><dt>Test</dt><dd>Ground testing on the assembled vehicle rather than a separate rig</dd></div>
+    </dl>
+  </section>
+
+  <section id="inferno" class="project">
+    <div class="project-head">
+      <div>
+        <h2>Project Inferno &mdash; Liquid Engine Test DAQ</h2>
+        <p class="role">Simulation &amp; Software Engineer &middot; UMBRA Electronics &middot; Spring 2026 &ndash; present</p>
+      </div>
+    </div>
+
+    <p>Inferno is the data acquisition and control system for UMBRA's liquid rocket engine test stand: a four-layer board built around an STM32H7 and a Raspberry Pi Compute Module, reading K-type thermocouples, load cells, pressure transducers, and current sensors while driving opto-isolated solenoid valves over Ethernet from a safe distance.</p>
+
+    <figure class="shot">
+      <img src="assets/img/inferno-board.jpg" alt="The Inferno DAQ board during bench bring-up, wired to thermocouples and a breadboard test harness" loading="lazy">
+      <figcaption>Bench bring-up: the DAQ board with the Compute Module seated, thermocouple harness, and valve driver test rig.</figcaption>
+    </figure>
+
+    <h3>My contribution</h3>
+    <p>I wrote the firmware that turns the board into instrumentation and the software that makes it legible to an operator. On the STM32H7 side that meant sensor drivers and the acquisition loop &mdash; MCP9600 thermocouple front ends, HX711 load cell amplifiers, ADC channels, pressure transducer scaling, current averaging, valve indexing, and an automatic valve sequence for timed test operations.</p>
+
+    <p>On the ground side I built a multithreaded Python application that reads and parses the STM32 telemetry stream over serial, accepts operator commands back to the board, logs everything to timestamped CSV, and writes into InfluxDB so the whole test appears live on a Grafana dashboard. Reading and writing run on separate threads behind a queue so that a slow database write can never stall the serial link during a test.</p>
+
+    <figure class="shot">
+      <img src="assets/img/inferno-dashboard.jpg" alt="Grafana dashboard showing safety and connection status, sensor health flags, valve states, thermocouple and current sensor plots, beside the serial command GUI" loading="lazy">
+      <figcaption>Live test view: the command GUI on the left, Grafana on the right &mdash; safety interlock and link status, per-sensor health flags, valve states, thermocouples, pressure transducers, load cells, and current draw.</figcaption>
+    </figure>
+
+    <p>I also simulated the valve driver circuit in LTspice to characterize actuation behavior and timing before it drove real hardware, designed and printed the adapters that mate the DAQ to the stand's instrumentation, and spent a fair amount of time on the unglamorous half of the job &mdash; chasing down connectivity faults, including the SSH link between the ground station and the stand.</p>
+
+    <figure class="shot">
+      <img src="assets/img/inferno-adapters.jpg" alt="Twelve 3D-printed port adapter revisions laid out in order from V0 to V12, each labeled by hand" loading="lazy">
+      <figcaption>The port adapter, V0 through V12. Twelve revisions to get a part that holds a connector square against a panel &mdash; most of them differing by a fraction of a millimeter.</figcaption>
+    </figure>
+
+    <figure class="shot">
+      <img src="assets/img/inferno-groundstation.jpg" alt="The ground station enclosure: sealed box with warning beacon, emergency stop, ventilation fans, and a bulkhead Ethernet connector" loading="lazy">
+      <figcaption>Ground station enclosure &mdash; bulkhead Ethernet, forced-air cooling, warning beacon, and an emergency stop within reach of the operator.</figcaption>
+    </figure>
+
+    <dl class="specs">
+      <div><dt>Firmware</dt><dd>C on STM32H7 (HAL), sensor drivers and acquisition loop</dd></div>
+      <div><dt>Ground software</dt><dd>Python, threading, pySerial, InfluxDB client, Tkinter, Grafana</dd></div>
+      <div><dt>Instrumentation</dt><dd>K-type thermocouples, load cells, pressure transducers, current sense, solenoid valves</dd></div>
+      <div><dt>Analysis</dt><dd>LTspice valve driver simulation</dd></div>
+      <div><dt>Mechanical</dt><dd>Fusion 360 / SolidWorks, FDM printed adapters</dd></div>
+    </dl>
+  </section>
+
+  <section id="exobronco" class="project">
+    <div class="project-head">
+      <div>
+        <h2>Project Exo Bronco &mdash; Two-Stage Flight Avionics</h2>
+        <p class="role">Avionics Systems Liaison &middot; UMBRA Electronics &middot; Spring 2026 &ndash; present</p>
+      </div>
+    </div>
+
+    <p>Exo Bronco is a two-stage high-power rocket. Both stages fly a custom avionics board running CircuitPython, carrying a high-G accelerometer, a 9-DOF IMU, a barometric sensor, GPS, LoRa telemetry, and four pyro channels with continuity monitoring, logging the whole flight to CSV while it happens.</p>
+
+    <h3>The telemetry link</h3>
+    <p>My most substantive work here was on the radio. A two-stage vehicle has two flight computers transmitting at once, at very different ranges, and the link configuration has to reflect that rather than being left at defaults. I set the LoRa signal bandwidth explicitly to 125 kHz and assigned each stage its own frequency and spreading factor &mdash; the booster at 432 MHz and SF8, where the flight is short and close; the sustainer at 434 MHz and SF11, trading data rate for the link margin it needs at altitude. Separating the stages in frequency keeps them from stepping on each other, and matching spreading factor to range is what makes the sustainer's packets actually arrive.</p>
+
+    <p>Alongside that I implement and test embedded code on the custom boards, do board-level soldering and modifications, and coordinate between the subteams that own different pieces of the vehicle &mdash; which in practice means being the person who notices when the avionics assumption and the mechanical assumption have quietly diverged.</p>
+
+    <dl class="specs">
+      <div><dt>Platform</dt><dd>CircuitPython on a custom ESP32-S3 based flight board</dd></div>
+      <div><dt>Sensing</dt><dd>ADXL375 high-G accelerometer, BNO055 9-DOF IMU, MS8607 barometric sensor, GPS</dd></div>
+      <div><dt>Telemetry</dt><dd>RFM9x LoRa, per-stage frequency and spreading factor plan</dd></div>
+      <div><dt>Recovery</dt><dd>Four pyro channels with continuity checking, altitude-triggered main deployment</dd></div>
+    </dl>
+  </section>
+
+  <section id="delerium" class="project">
+    <div class="project-head">
+      <div>
+        <h2>Delerium v2 &mdash; L1 Certification Rocket</h2>
+        <p class="role">Personal project &middot; scratch build</p>
+      </div>
+    </div>
+
+    <p>A 54&nbsp;mm scratch-built high-power rocket for NAR Level 1 certification, flying an AeroTech I600R and simulating to roughly Mach 1.2&ndash;1.3. Blue Tube 2.0 airframe, PA6-CF fins printed in-house and fiberglass-wrapped as a structural mitigation, dual-deploy recovery with motor ejection for the drogue and a separate black powder charge for the main.</p>
+
+    <p>The avionics bay is an Eggtimer Quasar GPS and dual-deploy altimeter that I assembled from the kit and then repaired at the component level &mdash; replacing a failed 0.1&nbsp;&micro;F 1206 ceramic capacitor and clearing an EEPROM boot fault by reflowing the offending joints. I did similar work on the EggFinder LCD ground receiver, tracking a fault down to a heat-damaged 3.3&nbsp;V regulator and replacing it.</p>
+
+    <p>The part of this project I'd actually defend in a design review is the model audit. Going back through the OpenRocket file with a critical eye turned up a shock cord modeled at 43&nbsp;cm where it needs to be 1.5&ndash;2&nbsp;m, the wrong cord material entirely (elastic instead of Kevlar or tubular nylon), structural components still modeled as balsa, and deployment events happening at up to ~111&nbsp;m/s in several simulation cases. Any one of those is how a rocket comes apart at apogee. Finding them on the ground is the whole job.</p>
+  </section>
+
+  <section id="src" class="project compact">
+    <div class="project-head">
+      <div>
+        <h2>Small Rocket Competition</h2>
+        <p class="role">Multidisciplinary team &middot; Fall 2025</p>
+      </div>
+    </div>
+    <p>Designed, prototyped, and launched a G-class rocket to 2,457&nbsp;ft apogee, placing 2nd overall. I led integration of the avionics and structural subsystems and designed the recovery system, which deployed successfully post-flight. This was the project that got me into UMBRA.</p>
+  </section>
+
+  <section id="leadership">
+    <h2>Leadership</h2>
+    <p>Beyond running Revenant, I sit on UMBRA's Executive Board as the Underclassmen Representative and as the association's delegate to the Engineering Student Council. The first role means being the path into real hardware work for students who don't yet know how to ask for it &mdash; I'm the link between project managers who need people and underclassmen who want in but haven't found the door. The second means representing UMBRA at the college level on funding and bylaws, and carrying those changes back to the teams they affect.</p>
+    <p>I joined UMBRA in fall 2025 through the Small Rocket Competition, spent spring 2026 on flight code and data acquisition across several UMBRA Electronics projects, and now focus on developing complex flight systems.</p>
+  </section>
+
+  <section id="skills">
+    <h2>Tools</h2>
+    <div class="skills">
+      <div><h3>Design &amp; analysis</h3><p>SolidWorks, Fusion 360, OpenRocket, LTspice, KiCad, MATLAB</p></div>
+      <div><h3>Software</h3><p>Python, CircuitPython, embedded C (STM32 HAL), Arduino, InfluxDB, Grafana</p></div>
+      <div><h3>Hands-on</h3><p>SMT rework and board-level repair, FDM printing in PA6-CF, composites layup, harness fabrication, bench instrumentation</p></div>
+      <div><h3>Engineering practice</h3><p>Simulation validation against real material properties, BOM and cost control, scope and schedule management, design reviews</p></div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <h2>Get in touch</h2>
+    <p>I'm looking for aerospace internships where I can work on avionics, GNC, or test systems. The fastest way to reach me is email.</p>
+    <p class="contact-links">
+      <a href="mailto:eliott.berlemont@gmail.com">eliott.berlemont@gmail.com</a>
+      <a href="https://github.com/AvidDomainUser">github.com/AvidDomainUser</a>
+    </p>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Eliott Berlemont &middot; Costa Mesa, California</p>
+  </div>
+</footer>
+
+</body>
+</html>
