@@ -16,9 +16,9 @@ python3 -m http.server 8000
 
 ## Publishing
 
-This repo is set up for GitHub Pages. For a user site the repo must be named
-`<your-username>.github.io`, and Pages should be set to deploy from the `main` branch,
-root folder, under Settings → Pages.
+This repo is the GitHub Pages user site for the `eliottberlemont` account and must
+keep the repo name `eliottberlemont.github.io`. Pages deploys from the `main` branch,
+root folder (Settings → Pages). Live at https://eliottberlemont.github.io
 
 `.nojekyll` is present so GitHub serves the files as-is rather than running them
 through Jekyll.
