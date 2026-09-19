@@ -249,6 +249,34 @@ footer p {
   margin: 0;
 }
 
+/* ---------- photo pair + video clip ---------- */
+
+.shot-pair {
+  display: grid;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.shot-pair .shot { margin: 0; }
+
+.clip video {
+  display: block;
+  width: 100%;
+  max-width: 340px;
+  aspect-ratio: 366 / 652;
+  height: auto;
+  margin: 0 auto;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: #000;
+}
+
+.clip figcaption { text-align: center; }
+
+@media (min-width: 34rem) {
+  .shot-pair { grid-template-columns: 1fr 1fr; gap: 1.1rem; }
+}
+
 /* ---------- wider screens ---------- */
 
 @media (min-width: 40rem) {
