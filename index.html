@@ -112,6 +112,22 @@
 
     <p>Exo Bronco is a two-stage high-power rocket. Both stages fly a custom avionics board running CircuitPython, carrying a high-G accelerometer, a 9-DOF IMU, a barometric sensor, GPS, LoRa telemetry, and four pyro channels with continuity monitoring, logging the whole flight to CSV while it happens.</p>
 
+    <figure class="shot tall">
+      <img src="assets/img/exo-vehicle.jpg" alt="The Exo Bronco vehicle standing upright in the lab, purple-to-pink airframe with the UMBRA logo and signed fins" loading="lazy">
+      <figcaption>The vehicle in the lab, fins signed by the team.</figcaption>
+    </figure>
+
+    <div class="shot-pair">
+      <figure class="shot">
+        <img src="assets/img/exo-board.jpg" alt="The bare UMBRA flight computer: ESP32-S3 module, patch GPS antenna, SMA connector, buzzer, status LED, and a row of screw terminals for pyro channels" loading="lazy">
+        <figcaption>The flight computer &mdash; ESP32-S3, patch GPS, SMA for the telemetry antenna, and screw terminals for the pyro channels.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="assets/img/exo-sled.jpg" alt="The avionics sled powered up on the bench, two boards mounted to a 3D-printed sled with twisted-pair wiring, status LEDs lit" loading="lazy">
+        <figcaption>Powered up on the bench: flight computer and tracker on the printed sled, twisted-pair runs out to the charges.</figcaption>
+      </figure>
+    </div>
+
     <h3>The telemetry link</h3>
     <p>My most substantive work here was on the radio. A two-stage vehicle has two flight computers transmitting at once, at very different ranges, and the link configuration has to reflect that rather than being left at defaults. I set the LoRa signal bandwidth explicitly to 125 kHz and assigned each stage its own frequency and spreading factor &mdash; the booster at 432 MHz and SF8, where the flight is short and close; the sustainer at 434 MHz and SF11, trading data rate for the link margin it needs at altitude. Separating the stages in frequency keeps them from stepping on each other, and matching spreading factor to range is what makes the sustainer's packets actually arrive.</p>
 
