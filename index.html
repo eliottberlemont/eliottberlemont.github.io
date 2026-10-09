@@ -62,36 +62,31 @@
       </div>
     </div>
 
-    <p>Project INFERNO is a completely student-designed liquid engine test stand: a dual-propellant, pressure-fed system with cryogenic and variable-flow capabilities. It serves as a reusable test bed for liquid engine work &mdash; regenerative cooling, new propellant combinations, thrust vectoring, and throttling. This year the team is assembling its first iteration around the student-designed FREEDOM engine.</p>
+    <p>Project INFERNO is a completely student-designed liquid engine test stand: a dual-propellant, pressure-fed system with cryogenic and variable-flow capabilities. It serves as a reusable test bed for liquid engine research, including but not limited to regenerative cooling, new propellant combinations, thrust vectoring, and throttling. This year the team is assembling its first iteration around the in-house FREEDOM engine design.</p>
 
-    <p>My work is on the data acquisition and control side: a four-layer board built around an STM32H7 and a Raspberry Pi Compute Module that reads the stand's thermocouples, load cells, pressure transducers, and current sensors, and drives its solenoid valves over Ethernet from a safe distance.</p>
-
-    <figure class="shot">
-      <img src="assets/img/inferno-board.jpg" alt="The Inferno DAQ board during bench bring-up, wired to thermocouples and a breadboard test harness" loading="lazy">
+    <figure class="shot tall">
+      <img src="assets/img/inferno-board.jpg" alt="The INFERNO DAQ board during bench bring-up, wired to thermocouples and a breadboard test harness" loading="lazy">
       <figcaption>Bench bring-up: the DAQ board with the Compute Module seated, thermocouple harness, and valve driver test rig.</figcaption>
     </figure>
 
     <h3>My contribution</h3>
-    <p>I wrote the firmware that turns the board into instrumentation and the software that makes it legible to an operator. On the STM32H7 side that meant sensor drivers and the acquisition loop &mdash; MCP9600 thermocouple front ends, HX711 load cell amplifiers, ADC channels, pressure transducer scaling, current averaging, valve indexing, and an automatic valve sequence for timed test operations.</p>
-
-    <p>On the ground side I built a multithreaded Python application that reads and parses the STM32 telemetry stream over serial, accepts operator commands back to the board, logs everything to timestamped CSV, and writes into InfluxDB so the whole test appears live on a Grafana dashboard. Reading and writing run on separate threads behind a queue so that a slow database write can never stall the serial link during a test.</p>
+    <p>On Project INFERNO, I worked on data acquisition, specifically valve control. Using a four-layer board built around an STM32H7 processor and a Raspberry Pi Compute Module, I troubleshot connection issues, GUI systems, valve actuation, and sensor sampling speeds.</p>
 
     <figure class="shot">
       <img src="assets/img/inferno-dashboard.jpg" alt="Grafana dashboard showing safety and connection status, sensor health flags, valve states, thermocouple and current sensor plots, beside the serial command GUI" loading="lazy">
       <figcaption>Live test view: the command GUI on the left, Grafana on the right &mdash; safety interlock and link status, per-sensor health flags, valve states, thermocouples, pressure transducers, load cells, and current draw.</figcaption>
     </figure>
 
-    <p>I also simulated the valve driver circuit in LTspice to characterize actuation behavior and timing before it drove real hardware, designed and printed the adapters that mate the DAQ to the stand's instrumentation, and spent a fair amount of time on the unglamorous half of the job &mdash; chasing down connectivity faults, including the SSH link between the ground station and the stand.</p>
-
-    <figure class="shot">
-      <img src="assets/img/inferno-adapters.jpg" alt="Twelve 3D-printed port adapter revisions laid out in order from V0 to V12, each labeled by hand" loading="lazy">
-      <figcaption>The port adapter, V0 through V12. Twelve revisions to get a part that holds a connector square against a panel &mdash; most of them differing by a fraction of a millimeter.</figcaption>
-    </figure>
-
-    <figure class="shot">
-      <img src="assets/img/inferno-groundstation.jpg" alt="The ground station enclosure: sealed box with warning beacon, emergency stop, ventilation fans, and a bulkhead Ethernet connector" loading="lazy">
-      <figcaption>Ground station enclosure &mdash; bulkhead Ethernet, forced-air cooling, warning beacon, and an emergency stop within reach of the operator.</figcaption>
-    </figure>
+    <div class="shot-pair">
+      <figure class="shot">
+        <img src="assets/img/inferno-adapters.jpg" alt="Twelve 3D-printed port adapter revisions laid out in order from V0 to V12, each labeled by hand" loading="lazy">
+        <figcaption>The port adapter, V0 through V12 &mdash; most differing by a fraction of a millimeter.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="assets/img/inferno-groundstation.jpg" alt="The ground station enclosure: sealed box with warning beacon, emergency stop, ventilation fans, and a bulkhead Ethernet connector" loading="lazy">
+        <figcaption>Ground station enclosure &mdash; bulkhead Ethernet, forced-air cooling, beacon, and an emergency stop.</figcaption>
+      </figure>
+    </div>
 
     <dl class="specs">
       <div><dt>Firmware</dt><dd>C on STM32H7 (HAL), sensor drivers and acquisition loop</dd></div>
@@ -110,7 +105,7 @@
       </div>
     </div>
 
-    <p>Exo Bronco is a two-stage high-power rocket. Both stages fly a custom avionics board running CircuitPython, carrying a high-G accelerometer, a 9-DOF IMU, a barometric sensor, GPS, LoRa telemetry, and four pyro channels with continuity monitoring, logging the whole flight to CSV while it happens.</p>
+    <p>Exo Bronco is a two-stage high-powered collegiate rocket. Both stages fly using custom avionics PCBs, running Python flight code and carrying several different sensors. These computers record data to ensure that the stage separation on the rocket falls within safe and standard operating procedures, and are critical to the success of the mission.</p>
 
     <figure class="shot tall">
       <img src="assets/img/exo-vehicle.jpg" alt="MTD3, an Exo Bronco technical demonstrator, standing upright in the lab — purple-to-pink airframe with the UMBRA logo and signed fins" loading="lazy">
@@ -128,10 +123,8 @@
       </figure>
     </div>
 
-    <h3>The telemetry link</h3>
-    <p>My most substantive work here was on the radio. A two-stage vehicle has two flight computers transmitting at once, at very different ranges, and the link configuration has to reflect that rather than being left at defaults. I set the LoRa signal bandwidth explicitly to 125 kHz and assigned each stage its own frequency and spreading factor &mdash; the booster at 432 MHz and SF8, where the flight is short and close; the sustainer at 434 MHz and SF11, trading data rate for the link margin it needs at altitude. Separating the stages in frequency keeps them from stepping on each other, and matching spreading factor to range is what makes the sustainer's packets actually arrive.</p>
-
-    <p>Alongside that I implement and test embedded code on the custom boards, do board-level soldering and modifications, and coordinate between the subteams that own different pieces of the vehicle &mdash; which in practice means being the person who notices when the avionics assumption and the mechanical assumption have quietly diverged.</p>
+    <h3>My contribution</h3>
+    <p>My role on Exo Bronco's avionics subteam was troubleshooting and further developing custom Python flight code. My work mainly focused on sensors such as the BNO055 and ADXL375 &mdash; specifically how fast they sampled data at different points during flight, to optimize storage space on the onboard microSD card and packet size for live telemetry.</p>
 
     <dl class="specs">
       <div><dt>Platform</dt><dd>CircuitPython on a custom ESP32-S3 based flight board</dd></div>
@@ -141,20 +134,6 @@
     </dl>
   </section>
 
-  <section id="delerium" class="project">
-    <div class="project-head">
-      <div>
-        <h2>Delerium v2 &mdash; L1 Certification Rocket</h2>
-        <p class="role">Personal project &middot; scratch build</p>
-      </div>
-    </div>
-
-    <p>A 54&nbsp;mm scratch-built high-power rocket for NAR Level 1 certification, flying an AeroTech I600R and simulating to roughly Mach 1.2&ndash;1.3. Blue Tube 2.0 airframe, PA6-CF fins printed in-house and fiberglass-wrapped as a structural mitigation, dual-deploy recovery with motor ejection for the drogue and a separate black powder charge for the main.</p>
-
-    <p>The avionics bay is an Eggtimer Quasar GPS and dual-deploy altimeter that I assembled from the kit and then repaired at the component level &mdash; replacing a failed 0.1&nbsp;&micro;F 1206 ceramic capacitor and clearing an EEPROM boot fault by reflowing the offending joints. I did similar work on the EggFinder LCD ground receiver, tracking a fault down to a heat-damaged 3.3&nbsp;V regulator and replacing it.</p>
-
-    <p>The part of this project I'd actually defend in a design review is the model audit. Going back through the OpenRocket file with a critical eye turned up a shock cord modeled at 43&nbsp;cm where it needs to be 1.5&ndash;2&nbsp;m, the wrong cord material entirely (elastic instead of Kevlar or tubular nylon), structural components still modeled as balsa, and deployment events happening at up to ~111&nbsp;m/s in several simulation cases. Any one of those is how a rocket comes apart at apogee. Finding them on the ground is the whole job.</p>
-  </section>
 
   <section id="src" class="project compact">
     <div class="project-head">
@@ -194,8 +173,8 @@
   <section id="skills">
     <h2>Tools</h2>
     <div class="skills">
-      <div><h3>Design &amp; analysis</h3><p>SolidWorks, Fusion 360, OpenRocket, LTspice, KiCad, MATLAB</p></div>
-      <div><h3>Software</h3><p>Python, CircuitPython, embedded C (STM32 HAL), Arduino, InfluxDB, Grafana</p></div>
+      <div><h3>Design &amp; analysis</h3><p>SolidWorks, Fusion 360, Onshape, OpenRocket, LTspice</p></div>
+      <div><h3>Software</h3><p>Python, CircuitPython, Arduino, InfluxDB, Grafana, Microsoft Office</p></div>
       <div><h3>Hands-on</h3><p>SMT rework and board-level repair, FDM printing in PA6-CF, composites layup, harness fabrication, bench instrumentation</p></div>
       <div><h3>Engineering practice</h3><p>Simulation validation against real material properties, BOM and cost control, scope and schedule management, design reviews</p></div>
     </div>
@@ -203,7 +182,7 @@
 
   <section id="contact">
     <h2>Get in touch</h2>
-    <p>I'm looking for aerospace internships where I can work on avionics, GNC, or test systems. The fastest way to reach me is email.</p>
+    <p>I'm looking for aerospace internships where I can work on avionics, GNC, industrial optimization, or test systems. The fastest way to reach me is email.</p>
     <p class="contact-links">
       <a href="mailto:eliott.berlemont@gmail.com">eliott.berlemont@gmail.com</a>
     </p>
